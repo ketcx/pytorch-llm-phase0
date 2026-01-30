@@ -111,7 +111,7 @@ cpu_fp32             |          0.44 |           84666.71 samples/s
 mps_fp32             |          5.98 |            6207.14 samples/s
 ======================================================================
 
-✓ MPS is 13.64x faster than CPU
+⚠️  CPU is 13.64x faster than MPS for this small model
 ```
 
 ---
@@ -545,8 +545,8 @@ make format
 
 | Config | Device | Throughput | Speedup |
 |--------|--------|-----------|---------|
-| FP32, batch=32 | MPS | 6,207 samples/s | 13.6x |
-| FP32, batch=32 | CPU | 84,667 samples/s | 1.0x |
+| FP32, batch=32 | CPU | 84,667 samples/s | 13.6x |
+| FP32, batch=32 | MPS | 6,207 samples/s | 1.0x |
 
 *Note: Higher samples/s on CPU due to small model and batch size. MPS excels with larger models and batches.*
 
@@ -574,8 +574,8 @@ If you use this template for your project:
 ```bibtex
 @software{pytorch_llm_phase0,
   title={PyTorch LLM Phase 0: Production-Ready Training Pipeline},
-  author={Your Name},
-  year={2026},
+  author={{AUTHOR_NAME}},
+  year={{YEAR}},
   url={https://github.com/ketcx/pytorch-llm-phase0}
 }
 ```

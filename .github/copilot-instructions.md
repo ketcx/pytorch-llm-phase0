@@ -403,8 +403,9 @@ from src import get_device, is_mps_available
 # In training code
 device = get_device(preferred_device="mps", fallback_on_error=True)
 
-# MPS is ~10-15x faster than CPU on M1 for typical workloads
-# Always benchmark with `python scripts/benchmark.py`
+# On larger models/batches, MPS on M1 can be significantly faster than CPU
+# For small models, CPU may be faster (see README benchmarks)
+# Always benchmark with `python scripts/benchmark.py` and choose based on results
 ```
 
 ### Data Types

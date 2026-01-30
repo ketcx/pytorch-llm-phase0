@@ -83,7 +83,7 @@ class Benchmark:
 
             # Forward pass
             with torch.autocast(
-                device_type=self.device if self.device != "mps" else "cpu",
+                device_type=self.device,
                 dtype=self.dtype,
                 enabled=(self.dtype != torch.float32),
             ):
@@ -193,7 +193,8 @@ class Benchmark:
 
                 # Clean up
                 del model, optimizer
-                torch.cuda.empty_cache() if device == "cuda" else None
+                if device == "cuda":
+                    torch.cuda.empty_cache()
 
         return results
 

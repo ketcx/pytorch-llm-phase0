@@ -82,6 +82,11 @@ class CheckpointManager:
 
         Returns:
             Dictionary with checkpoint metadata (epoch, step, metrics)
+
+        Security Note:
+            Uses weights_only=False to support loading optimizer and scheduler states.
+            Only load checkpoints from trusted sources. For untrusted checkpoints,
+            consider using weights_only=True and loading only model weights separately.
         """
         checkpoint = torch.load(checkpoint_path, weights_only=False)
 

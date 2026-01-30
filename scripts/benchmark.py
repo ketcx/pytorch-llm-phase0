@@ -11,14 +11,14 @@ import torch.nn as nn
 from src import parse_cli_args
 from src.benchmark import Benchmark
 from src.data import create_dataloaders
-from src.device import get_device_info, print_device_stats, is_mps_available
+from src.device import get_device_info, is_mps_available
 from src.model import create_model
 
 
 def main():
     """Run device benchmark."""
-    # Parse arguments
-    parser_args = parse_cli_args()
+    # Parse arguments (unused but kept for consistency with other scripts)
+    _ = parse_cli_args()
 
     print("=" * 70)
     print("PyTorch Device Benchmark - MPS vs CPU")
@@ -48,12 +48,12 @@ def main():
 
     # Define model factory
     def model_fn():
+        # Note: device parameter is ignored; benchmark moves model to target device
         return create_model(
             input_dim=10,
             hidden_size=128,
             num_layers=2,
             dropout=0.1,
-            device="cpu",  # Will be moved by benchmark
         )
 
     # Define optimizer factory
@@ -93,18 +93,13 @@ def main():
 
         if mps_result and cpu_result:
             speedup = (
-                cpu_result["throughput_samples_per_sec"]
-                / mps_result["throughput_samples_per_sec"]
+                mps_result["throughput_samples_per_sec"] / cpu_result["throughput_samples_per_sec"]
             )
             if speedup > 1:
-                print(
-                    f"✓ MPS is {speedup:.2f}x faster than CPU for this workload"
-                )
+                print(f"✓ MPS is {speedup:.2f}x faster than CPU for this workload")
                 print("  → Use MPS for training")
             else:
-                print(
-                    f"⚠️  CPU is {1/speedup:.2f}x faster than MPS for this workload"
-                )
+                print(f"⚠️  CPU is {1/speedup:.2f}x faster than MPS for this workload")
                 print("  → Use CPU for this configuration")
 
     print("\nNotes:")
