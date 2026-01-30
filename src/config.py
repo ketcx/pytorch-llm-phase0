@@ -1,9 +1,6 @@
 """Configuration management for training."""
 
 import argparse
-import json
-import os
-import sys
 from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -30,6 +27,35 @@ class TrainingConfig:
     num_workers: int = 0
     learning_rate: float = 1e-3
     weight_decay: float = 1e-5
+
+    def __post_init__(self) -> None:
+        """Convert string values to appropriate types and validate ranges."""
+        # Normalize and validate learning_rate and weight_decay
+        for field_name in ("learning_rate", "weight_decay"):
+            value = getattr(self, field_name)
+
+            # Convert from string if necessary
+            if isinstance(value, str):
+                try:
+                    value = float(value)
+                except (TypeError, ValueError) as exc:
+                    raise ValueError(
+                        f"Invalid value for {field_name}: {value!r}. Expected a float."
+                    ) from exc
+
+            # Ensure the value is numeric
+            if not isinstance(value, (int, float)):
+                raise TypeError(
+                    f"Invalid type for {field_name}: {type(value).__name__}. Expected a float."
+                )
+
+            # Ensure the value is positive
+            if value <= 0.0:
+                raise ValueError(
+                    f"Invalid value for {field_name}: {value}. Expected a positive float."
+                )
+
+            setattr(self, field_name, float(value))
 
 
 @dataclass
@@ -112,9 +138,7 @@ class Config:
 
 def parse_cli_args(overrides: Optional[list] = None) -> argparse.Namespace:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description="PyTorch LLM Phase 0 - Training script"
-    )
+    parser = argparse.ArgumentParser(description="PyTorch LLM Phase 0 - Training script")
     parser.add_argument(
         "--config",
         type=str,
