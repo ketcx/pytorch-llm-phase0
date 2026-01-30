@@ -27,7 +27,7 @@ def train_epoch(
         model: Model to train
         dataloader: Training dataloader
         optimizer: Optimizer
-        scheduler: Learning rate scheduler
+        scheduler: Learning rate scheduler (step-based, called after each batch)
         criterion: Loss function
         device: Device (cpu, mps, cuda)
         epoch: Current epoch number
@@ -35,6 +35,12 @@ def train_epoch(
 
     Returns:
         Dictionary with epoch metrics
+
+    Note:
+        This function expects a step-based scheduler (e.g., from
+        get_cosine_schedule_with_warmup or get_linear_schedule_with_warmup)
+        that is updated after every batch. For epoch-based schedulers,
+        call scheduler.step() after this function returns.
     """
     model.train()
     epoch_loss = 0.0

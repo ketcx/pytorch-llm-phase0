@@ -166,8 +166,10 @@ def main():
             is_best=is_best,
         )
 
-        # Cleanup old checkpoints
-        checkpoint_manager.cleanup_old_checkpoints(keep_last_n=3)
+        # Cleanup old checkpoints periodically to reduce filesystem overhead
+        cleanup_interval = 5  # Cleanup every 5 epochs
+        if (epoch + 1) % cleanup_interval == 0:
+            checkpoint_manager.cleanup_old_checkpoints(keep_last_n=3)
 
     # Training finished
     total_time = time.time() - training_start_time

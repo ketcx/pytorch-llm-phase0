@@ -29,11 +29,33 @@ class TrainingConfig:
     weight_decay: float = 1e-5
 
     def __post_init__(self) -> None:
-        """Convert string values to appropriate types."""
-        if isinstance(self.learning_rate, str):
-            self.learning_rate = float(self.learning_rate)
-        if isinstance(self.weight_decay, str):
-            self.weight_decay = float(self.weight_decay)
+        """Convert string values to appropriate types and validate ranges."""
+        # Normalize and validate learning_rate and weight_decay
+        for field_name in ("learning_rate", "weight_decay"):
+            value = getattr(self, field_name)
+
+            # Convert from string if necessary
+            if isinstance(value, str):
+                try:
+                    value = float(value)
+                except (TypeError, ValueError) as exc:
+                    raise ValueError(
+                        f"Invalid value for {field_name}: {value!r}. Expected a float."
+                    ) from exc
+
+            # Ensure the value is numeric
+            if not isinstance(value, (int, float)):
+                raise TypeError(
+                    f"Invalid type for {field_name}: {type(value).__name__}. Expected a float."
+                )
+
+            # Ensure the value is positive
+            if value <= 0.0:
+                raise ValueError(
+                    f"Invalid value for {field_name}: {value}. Expected a positive float."
+                )
+
+            setattr(self, field_name, float(value))
 
 
 @dataclass
