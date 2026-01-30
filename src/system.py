@@ -81,17 +81,23 @@ def get_device_info(device_type: str) -> DeviceInfo:
 def get_git_info() -> tuple[str, str]:
     """Get current git commit hash and branch."""
     try:
-        commit = subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL
-        ).decode("utf-8").strip()
+        commit = (
+            subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL)
+            .decode("utf-8")
+            .strip()
+        )
     except (subprocess.CalledProcessError, FileNotFoundError):
         commit = "unknown"
 
     try:
-        branch = subprocess.check_output(
-            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-            stderr=subprocess.DEVNULL,
-        ).decode("utf-8").strip()
+        branch = (
+            subprocess.check_output(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                stderr=subprocess.DEVNULL,
+            )
+            .decode("utf-8")
+            .strip()
+        )
     except (subprocess.CalledProcessError, FileNotFoundError):
         branch = "unknown"
 

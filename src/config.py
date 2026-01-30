@@ -1,9 +1,6 @@
 """Configuration management for training."""
 
 import argparse
-import json
-import os
-import sys
 from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -30,6 +27,13 @@ class TrainingConfig:
     num_workers: int = 0
     learning_rate: float = 1e-3
     weight_decay: float = 1e-5
+
+    def __post_init__(self) -> None:
+        """Convert string values to appropriate types."""
+        if isinstance(self.learning_rate, str):
+            self.learning_rate = float(self.learning_rate)
+        if isinstance(self.weight_decay, str):
+            self.weight_decay = float(self.weight_decay)
 
 
 @dataclass
@@ -112,9 +116,7 @@ class Config:
 
 def parse_cli_args(overrides: Optional[list] = None) -> argparse.Namespace:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description="PyTorch LLM Phase 0 - Training script"
-    )
+    parser = argparse.ArgumentParser(description="PyTorch LLM Phase 0 - Training script")
     parser.add_argument(
         "--config",
         type=str,

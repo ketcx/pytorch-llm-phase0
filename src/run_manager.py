@@ -2,11 +2,10 @@
 
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 from src.config import Config
 from src.logger import MetricsLogger, setup_logger
-from src.system import SystemInfo, get_system_info
+from src.system import get_system_info
 
 
 class RunManager:
@@ -45,10 +44,10 @@ class RunManager:
     def _save_metadata(self) -> None:
         """Save configuration and system info to run directory."""
         # Save resolved configuration
-        self.config.save(self.run_dir / "config_resolved.yaml")
+        self.config.save(str(self.run_dir / "config_resolved.yaml"))
 
         # Save system information
-        self.system_info.save(self.run_dir / "system.json")
+        self.system_info.save(str(self.run_dir / "system.json"))
 
         # Log initial information
         self.logger.info(f"Run directory: {self.run_dir}")
@@ -68,8 +67,7 @@ class RunManager:
         # Also log to main logger every save_interval steps
         if step % self.config.logging.save_interval == 0:
             metrics_str = ", ".join(
-                f"{k}: {v:.4f}" if isinstance(v, float) else f"{k}: {v}"
-                for k, v in metrics.items()
+                f"{k}: {v:.4f}" if isinstance(v, float) else f"{k}: {v}" for k, v in metrics.items()
             )
             self.logger.info(f"Step {step} - {metrics_str}")
 

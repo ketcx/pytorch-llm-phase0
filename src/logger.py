@@ -2,7 +2,6 @@
 
 import json
 import logging
-import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -56,11 +55,9 @@ def setup_logger(
     log_file = log_dir / f"{name}.log"
 
     if format_type == "json":
-        file_formatter = JsonFormatter()
+        file_formatter: logging.Formatter = JsonFormatter()
     else:
-        file_formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
+        file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(getattr(logging, level.upper()))
@@ -70,9 +67,7 @@ def setup_logger(
     # Console handler (always text with Rich)
     console_handler = RichHandler(rich_tracebacks=True)
     console_handler.setLevel(getattr(logging, level.upper()))
-    console_formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+    console_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     console_handler.setFormatter(console_formatter)
     logger.addHandler(console_handler)
 
